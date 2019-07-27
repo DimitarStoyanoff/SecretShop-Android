@@ -1,0 +1,106 @@
+apply plugin: 'com.android.application'
+apply plugin: 'androidx.navigation.safeargs'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+androidExtensions {
+    experimental = true
+}
+
+android {
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    compileSdkVersion build_versions.target_sdk
+    buildToolsVersion build_versions.build_tools
+
+    defaultConfig {
+        applicationId "com.stoyanoff.secretshop"
+        minSdkVersion build_versions.min_sdk
+        targetSdkVersion build_versions.target_sdk
+        versionCode 1
+        versionName "1.0.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    lintOptions {
+        disable "ResourceType"
+    }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+}
+
+dependencies {
+
+    // Android Testing Support Library's runner and rules
+    androidTestImplementation deps.androidx.atsl.runner
+    androidTestImplementation deps.androidx.atsl.rules
+
+    // Androidx
+    implementation deps.androidx.appcompat
+    implementation deps.androidx.constraintlayout
+    implementation deps.androidx.ktx
+
+    // Espresso
+    androidTestImplementation deps.androidx.espresso.core
+    androidTestImplementation deps.androidx.espresso.intents
+    androidTestImplementation deps.androidx.espresso.contrib
+
+    // Glide
+    implementation deps.glide.runtime
+    kapt deps.glide.compiler
+
+    // Gson
+    implementation deps.gson
+
+    // JUnit
+    testImplementation deps.junit
+    testImplementation deps.mockito
+    testImplementation deps.hamcrest
+    testImplementation deps.mockito_inline
+
+    // Koin
+    implementation deps.koin
+
+    // OkHttp
+    implementation deps.okhttp_logging_interceptor
+
+    // Kotlin
+    implementation deps.kotlin.stdlib
+
+    // LeakCanary
+    debugImplementation deps.leakcanary.android
+    debugImplementation deps.leakcanary.android_support
+    releaseImplementation deps.leakcanary.android_no_op
+
+    // Navigation
+    implementation deps.navigation.fragment
+    implementation deps.navigation.fragment_ktx
+    implementation deps.navigation.ui
+    implementation deps.navigation.ui_ktx
+
+    // Retrofit
+    implementation deps.retrofit.retrofit
+    implementation deps.retrofit.converter_gson
+    implementation deps.retrofit.adapter_rxjava
+
+    // Rx
+    implementation deps.rx.rxandroid
+    implementation deps.rx.rxjava
+    implementation deps.rx.rxkotlin
+}
