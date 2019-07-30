@@ -23,4 +23,5 @@ data class SortingValues(
     val deliveryCosts : Int?,
     @SerializedName("minCost")
     val minCost : Int?
+    //TODO question currency types
 )

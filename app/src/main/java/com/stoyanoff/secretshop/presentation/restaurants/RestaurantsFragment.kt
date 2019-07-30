@@ -4,9 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.stoyanoff.secretshop.R
+import com.stoyanoff.secretshop.data.model.OpenStatus
+import com.stoyanoff.secretshop.data.model.Restaurant
 import com.stoyanoff.secretshop.presentation.common.BaseViewFragment
 import kotlinx.android.synthetic.main.fragment_restaurants.*
 import org.koin.android.ext.android.inject
@@ -19,7 +22,8 @@ import org.koin.android.viewmodel.ext.android.viewModel
 class RestaurantsFragment : BaseViewFragment() {
 
     private val viewModel : RestaurantsViewModel by viewModel()
-    private val adapter : RestaurantsAdapter by inject()
+    private val restaurantsAdapter : RestaurantsAdapter by inject()
+    private var selectedSortType = SortTypes.BEST_MATCH
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         fragmentView = inflater.inflate(R.layout.fragment_restaurants,container,false)
@@ -36,6 +40,7 @@ class RestaurantsFragment : BaseViewFragment() {
     override fun initUi() {
         initAdapter()
         loadData()
+        initSpinners()
     }
 
     private fun loadData() {
@@ -43,13 +48,36 @@ class RestaurantsFragment : BaseViewFragment() {
     }
 
     private fun initAdapter() {
-        adapter.clickListener = {
+        restaurantsAdapter.clickListener = {
             viewModel.listItemClicked(it)
         }
 
         with(recycler_view){
             layoutManager = LinearLayoutManager(activity)
-            adapter = adapter
+            adapter = restaurantsAdapter
+        }
+    }
+
+    private fun initSpinners() {
+        sort_type_spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+
+            }
+
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                when(p2){
+                    0 -> selectedSortType = SortTypes.BEST_MATCH
+                    1 -> selectedSortType = SortTypes.NEWEST
+                    2 -> selectedSortType = SortTypes.RATING_AVERAGE
+                    3 -> selectedSortType = SortTypes.DISTANCE
+                    4 -> selectedSortType = SortTypes.POPULARITY
+                    5 -> selectedSortType = SortTypes.AVERAGE_PRODUCT_PRICE
+                    6 -> selectedSortType = SortTypes.DELIVERY_COSTS
+                    7 -> selectedSortType = SortTypes.MIN_COST
+                }
+                restaurantsAdapter.setSortType(selectedSortType)
+                sortRestaurants(viewModel.viewState.value?.results!!)
+            }
         }
     }
 
@@ -62,10 +90,39 @@ class RestaurantsFragment : BaseViewFragment() {
             if(it != null) {
                 toggleLoading(it.showLoading)
 
-                it.results?.let {albums ->
-                    adapter.setItems(albums)
+                it.results?.let {restaurants ->
+                    sortRestaurants(restaurants)
                 }
             }
         })
+    }
+
+    private fun sortRestaurants(restaurants : MutableList<Restaurant> ) {
+        restaurants[1].isFavorite = true
+        restaurants[3].isFavorite = true
+        val sorted = restaurants.sortedWith(compareBy<Restaurant> { !it.isFavorite }.thenBy { it.status }.thenBy {
+            when(selectedSortType){
+                SortTypes.BEST_MATCH -> {-it.sortingValues?.bestMatch!!}
+                SortTypes.NEWEST -> {-it.sortingValues?.newest!!}
+                SortTypes.RATING_AVERAGE -> {-it.sortingValues?.ratingAverage!!}
+                SortTypes.DISTANCE ->  {it.sortingValues?.distance}
+                SortTypes.POPULARITY -> {-it.sortingValues?.popularity!!}
+                SortTypes.AVERAGE_PRODUCT_PRICE -> {it.sortingValues?.averageProductPrice}
+                SortTypes.DELIVERY_COSTS ->  {it.sortingValues?.deliveryCosts}
+                SortTypes.MIN_COST -> {it.sortingValues?.minCost}
+            }
+        })
+        restaurantsAdapter.setItems(sorted.toMutableList())
+    }
+
+    enum class SortTypes {
+        BEST_MATCH,
+        NEWEST,
+        RATING_AVERAGE,
+        DISTANCE,
+        POPULARITY,
+        AVERAGE_PRODUCT_PRICE,
+        DELIVERY_COSTS,
+        MIN_COST
     }
 }

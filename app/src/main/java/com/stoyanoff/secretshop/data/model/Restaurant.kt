@@ -13,7 +13,7 @@ data class Restaurant (
     val status : OpenStatus?,
     @SerializedName("sortingValues")
     val sortingValues : SortingValues?,
-    val isFavorite : Boolean = false
+    var isFavorite : Boolean = false
 )
 
 

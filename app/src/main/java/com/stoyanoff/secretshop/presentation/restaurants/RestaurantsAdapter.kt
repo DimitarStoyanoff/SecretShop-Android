@@ -17,6 +17,7 @@ class RestaurantsAdapter : RecyclerView.Adapter<RestaurantsAdapter.RestaurantVie
 
     lateinit var clickListener: ((Restaurant) -> Unit)
     private var restaurants = mutableListOf<Restaurant>()
+    private var selectedSortType = RestaurantsFragment.SortTypes.BEST_MATCH
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RestaurantViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.restaurant_list_item,parent,false)
@@ -41,11 +42,17 @@ class RestaurantsAdapter : RecyclerView.Adapter<RestaurantsAdapter.RestaurantVie
         notifyItemInserted(restaurants.indexOf(item))
     }
 
+    fun setSortType(type : RestaurantsFragment.SortTypes) {
+        selectedSortType = type
+        notifyDataSetChanged()
+    }
+
     inner class RestaurantViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView) {
 
         val restaurantName = itemView.findViewById<TextView>(R.id.name)
         val sortType = itemView.findViewById<TextView>(R.id.sort_type)
-        val sortSortValue = itemView.findViewById<TextView>(R.id.sort_value)
+        val sortValue = itemView.findViewById<TextView>(R.id.sort_value)
+        val openStatus = itemView.findViewById<TextView>(R.id.open_status)
         val favoriteButton = itemView.findViewById<ImageView>(R.id.favorite_button)
         var restaurant : Restaurant? = null
 
@@ -53,6 +60,20 @@ class RestaurantsAdapter : RecyclerView.Adapter<RestaurantsAdapter.RestaurantVie
         fun bindRestaurantItem(restaurant: Restaurant) {
             this.restaurant = restaurant
             restaurantName.text = restaurant.name
+            openStatus.text = restaurant.status?.status
+            sortType.text = selectedSortType.name
+
+            //TODO use formatters instead
+            when(selectedSortType){
+                RestaurantsFragment.SortTypes.BEST_MATCH -> sortValue.text = restaurant.sortingValues?.bestMatch.toString()
+                RestaurantsFragment.SortTypes.NEWEST ->sortValue.text = restaurant.sortingValues?.newest.toString()
+                RestaurantsFragment.SortTypes.RATING_AVERAGE -> sortValue.text = restaurant.sortingValues?.ratingAverage.toString()
+                RestaurantsFragment.SortTypes.DISTANCE -> sortValue.text = restaurant.sortingValues?.distance.toString()
+                RestaurantsFragment.SortTypes.POPULARITY -> sortValue.text = restaurant.sortingValues?.popularity.toString()
+                RestaurantsFragment.SortTypes.AVERAGE_PRODUCT_PRICE -> sortValue.text = restaurant.sortingValues?.averageProductPrice.toString()
+                RestaurantsFragment.SortTypes.DELIVERY_COSTS -> sortValue.text = restaurant.sortingValues?.deliveryCosts.toString()
+                RestaurantsFragment.SortTypes.MIN_COST -> sortValue.text = restaurant.sortingValues?.minCost.toString()
+            }
 
             if(restaurant.isFavorite) {
                 favoriteButton.setImageResource(android.R.drawable.btn_star_big_on)
