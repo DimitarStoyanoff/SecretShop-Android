@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">SecretShop</string>
+    <string name="restaurant_list_item_name_placeholder">Restaurant name</string>
+    <string name="restaurant_list_item_sort_type_placeholder">Rating</string>
+    <string name="restaurant_list_item_sort_value_placeholder">0.5</string>
 </resources>

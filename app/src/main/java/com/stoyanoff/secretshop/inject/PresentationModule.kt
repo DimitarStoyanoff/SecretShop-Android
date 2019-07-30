@@ -1,5 +1,9 @@
 package com.stoyanoff.secretshop.inject
 
+import com.stoyanoff.secretshop.presentation.restaurants.RestaurantsAdapter
+import com.stoyanoff.secretshop.presentation.restaurants.RestaurantsViewModel
+import com.stoyanoff.secretshop.presentation.restaurants.RestaurantsViewState
+import org.koin.android.viewmodel.ext.koin.viewModel
 import org.koin.dsl.module.module
 
 /**
@@ -8,5 +12,8 @@ import org.koin.dsl.module.module
  */
 val presentationModule = module {
 
+    viewModel { RestaurantsViewModel(get(), get()) }
+    factory { RestaurantsViewState() }
+    factory { RestaurantsAdapter() }
 
 }

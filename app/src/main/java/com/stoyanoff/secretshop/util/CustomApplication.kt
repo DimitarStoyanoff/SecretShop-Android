@@ -19,7 +19,6 @@ class CustomApplication : Application(){
         startKoin(this, listOf(
             dataModule,
             localDataModule,
-            useCaseModule,
             presentationModule))
     }
 }
