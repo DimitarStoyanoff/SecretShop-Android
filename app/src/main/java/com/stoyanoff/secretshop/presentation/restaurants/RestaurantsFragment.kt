@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import android.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.stoyanoff.secretshop.R
@@ -14,6 +15,7 @@ import com.stoyanoff.secretshop.presentation.common.BaseViewFragment
 import kotlinx.android.synthetic.main.fragment_restaurants.*
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
+import java.util.*
 
 /**
  * Created by L on 30/07/2019.
@@ -41,6 +43,7 @@ class RestaurantsFragment : BaseViewFragment() {
         initAdapter()
         loadData()
         initSpinners()
+        initSearchView()
     }
 
     private fun loadData() {
@@ -76,9 +79,29 @@ class RestaurantsFragment : BaseViewFragment() {
                     7 -> selectedSortType = SortTypes.MIN_COST
                 }
                 restaurantsAdapter.setSortType(selectedSortType)
-                sortRestaurants(viewModel.viewState.value?.results!!)
+                viewModel.viewState.value?.results?.let {
+                    sortRestaurants(it)
+                }
+
             }
         }
+    }
+
+    private fun initSearchView() {
+        search_view.setOnQueryTextListener(object: androidx.appcompat.widget.SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(p0: String?): Boolean {
+               return false
+            }
+
+            override fun onQueryTextChange(p0: String?): Boolean {
+                viewModel.viewState.value?.results?.let {
+                    restaurantsAdapter.setItems(searchFilterRestaurants(it,p0!!))
+                }
+
+                return false
+            }
+
+        })
     }
 
     override fun initViewModelStates() {
@@ -98,8 +121,6 @@ class RestaurantsFragment : BaseViewFragment() {
     }
 
     private fun sortRestaurants(restaurants : MutableList<Restaurant> ) {
-        restaurants[1].isFavorite = true
-        restaurants[3].isFavorite = true
         val sorted = restaurants.sortedWith(compareBy<Restaurant> { !it.isFavorite }.thenBy { it.status }.thenBy {
             when(selectedSortType){
                 SortTypes.BEST_MATCH -> {-it.sortingValues?.bestMatch!!}
@@ -124,5 +145,22 @@ class RestaurantsFragment : BaseViewFragment() {
         AVERAGE_PRODUCT_PRICE,
         DELIVERY_COSTS,
         MIN_COST
+    }
+
+    internal fun searchFilterRestaurants(fullList: MutableList<Restaurant>, query: String): MutableList<Restaurant> {
+        var query = query
+        query = query.toLowerCase()
+        query = query.replace("\\s".toRegex(), "")
+
+        if (query == "") return fullList
+
+        val filteredList = ArrayList<Restaurant>()
+        for (restaurant in fullList) {
+            restaurant.name?.let {
+                if(it.toLowerCase(Locale.ENGLISH).contains(query))
+                    filteredList.add(restaurant)
+            }
+        }
+        return filteredList.toMutableList()
     }
 }

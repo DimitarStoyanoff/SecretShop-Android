@@ -8,7 +8,7 @@ import com.stoyanoff.secretshop.data.model.Restaurant
  */
 interface RestaurantsDataSource{
     fun getRestaurants() : MutableList<Restaurant>
-//    fun addToFavorites(restaurant: Restaurant)
-//    fun removeFromFavorites(restaurant: Restaurant)
-//    fun getFavorites()
+    fun addToFavorites(restaurant: Restaurant)
+    fun removeFromFavorites(restaurant: Restaurant)
+    fun getFavorites() : MutableSet<String>
 }

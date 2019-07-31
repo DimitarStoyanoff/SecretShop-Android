@@ -2,6 +2,7 @@ package com.stoyanoff.secretshop.inject
 
 import com.stoyanoff.secretshop.presentation.restaurants.RestaurantsDataSource
 import com.stoyanoff.secretshop.presentation.restaurants.RestaurantsRepository
+import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module.module
 
 /**
@@ -9,5 +10,5 @@ import org.koin.dsl.module.module
  *  Copyright (c) 2017 Centroida. All rights reserved.
  */
 val dataModule = module {
-    factory<RestaurantsDataSource> { RestaurantsRepository(get()) }
+    factory<RestaurantsDataSource> { RestaurantsRepository(androidContext()) }
 }
