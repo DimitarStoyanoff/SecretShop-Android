@@ -76,6 +76,7 @@ dependencies {
 
     // Koin
     implementation deps.koin
+    testImplementation deps.kointest
 
     // OkHttp
     implementation deps.okhttp_logging_interceptor

@@ -25,7 +25,6 @@ class RestaurantsFragment : BaseViewFragment() {
 
     private val viewModel : RestaurantsViewModel by viewModel()
     private val restaurantsAdapter : RestaurantsAdapter by inject()
-    private var selectedSortType = SortTypes.BEST_MATCH
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         fragmentView = inflater.inflate(R.layout.fragment_restaurants,container,false)
@@ -68,21 +67,7 @@ class RestaurantsFragment : BaseViewFragment() {
             }
 
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                when(p2){
-                    0 -> selectedSortType = SortTypes.BEST_MATCH
-                    1 -> selectedSortType = SortTypes.NEWEST
-                    2 -> selectedSortType = SortTypes.RATING_AVERAGE
-                    3 -> selectedSortType = SortTypes.DISTANCE
-                    4 -> selectedSortType = SortTypes.POPULARITY
-                    5 -> selectedSortType = SortTypes.AVERAGE_PRODUCT_PRICE
-                    6 -> selectedSortType = SortTypes.DELIVERY_COSTS
-                    7 -> selectedSortType = SortTypes.MIN_COST
-                }
-                restaurantsAdapter.setSortType(selectedSortType)
-                viewModel.viewState.value?.results?.let {
-                    sortRestaurants(it)
-                }
-
+                viewModel.onSortTypeChanged(p2)
             }
         }
     }
@@ -94,10 +79,9 @@ class RestaurantsFragment : BaseViewFragment() {
             }
 
             override fun onQueryTextChange(p0: String?): Boolean {
-                viewModel.viewState.value?.results?.let {
-                    restaurantsAdapter.setItems(searchFilterRestaurants(it,p0!!))
+                p0?.let {
+                    viewModel.onSearchQueryChanged(it)
                 }
-
                 return false
             }
 
@@ -114,53 +98,16 @@ class RestaurantsFragment : BaseViewFragment() {
                 toggleLoading(it.showLoading)
 
                 it.results?.let {restaurants ->
-                    sortRestaurants(restaurants)
+                    restaurantsAdapter.setItems(restaurants)
+                    restaurantsAdapter.setSortType(it.selectedSortType)
                 }
             }
         })
     }
 
-    private fun sortRestaurants(restaurants : MutableList<Restaurant> ) {
-        val sorted = restaurants.sortedWith(compareBy<Restaurant> { !it.isFavorite }.thenBy { it.status }.thenBy {
-            when(selectedSortType){
-                SortTypes.BEST_MATCH -> {-it.sortingValues?.bestMatch!!}
-                SortTypes.NEWEST -> {-it.sortingValues?.newest!!}
-                SortTypes.RATING_AVERAGE -> {-it.sortingValues?.ratingAverage!!}
-                SortTypes.DISTANCE ->  {it.sortingValues?.distance}
-                SortTypes.POPULARITY -> {-it.sortingValues?.popularity!!}
-                SortTypes.AVERAGE_PRODUCT_PRICE -> {it.sortingValues?.averageProductPrice}
-                SortTypes.DELIVERY_COSTS ->  {it.sortingValues?.deliveryCosts}
-                SortTypes.MIN_COST -> {it.sortingValues?.minCost}
-            }
-        })
-        restaurantsAdapter.setItems(sorted.toMutableList())
-    }
 
-    enum class SortTypes {
-        BEST_MATCH,
-        NEWEST,
-        RATING_AVERAGE,
-        DISTANCE,
-        POPULARITY,
-        AVERAGE_PRODUCT_PRICE,
-        DELIVERY_COSTS,
-        MIN_COST
-    }
 
-    internal fun searchFilterRestaurants(fullList: MutableList<Restaurant>, query: String): MutableList<Restaurant> {
-        var query = query
-        query = query.toLowerCase()
-        query = query.replace("\\s".toRegex(), "")
 
-        if (query == "") return fullList
 
-        val filteredList = ArrayList<Restaurant>()
-        for (restaurant in fullList) {
-            restaurant.name?.let {
-                if(it.toLowerCase(Locale.ENGLISH).contains(query))
-                    filteredList.add(restaurant)
-            }
-        }
-        return filteredList.toMutableList()
-    }
+
 }

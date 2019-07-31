@@ -17,7 +17,7 @@ class RestaurantsAdapter : RecyclerView.Adapter<RestaurantsAdapter.RestaurantVie
 
     lateinit var clickListener: ((Restaurant) -> Unit)
     private var restaurants = mutableListOf<Restaurant>()
-    private var selectedSortType = RestaurantsFragment.SortTypes.BEST_MATCH
+    private var selectedSortType = SortTypes.BEST_MATCH
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RestaurantViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.restaurant_list_item,parent,false)
@@ -42,7 +42,7 @@ class RestaurantsAdapter : RecyclerView.Adapter<RestaurantsAdapter.RestaurantVie
         notifyItemInserted(restaurants.indexOf(item))
     }
 
-    fun setSortType(type : RestaurantsFragment.SortTypes) {
+    fun setSortType(type : SortTypes) {
         selectedSortType = type
         notifyDataSetChanged()
     }
@@ -65,14 +65,14 @@ class RestaurantsAdapter : RecyclerView.Adapter<RestaurantsAdapter.RestaurantVie
 
             //TODO use formatters instead
             when(selectedSortType){
-                RestaurantsFragment.SortTypes.BEST_MATCH -> sortValue.text = restaurant.sortingValues?.bestMatch.toString()
-                RestaurantsFragment.SortTypes.NEWEST ->sortValue.text = restaurant.sortingValues?.newest.toString()
-                RestaurantsFragment.SortTypes.RATING_AVERAGE -> sortValue.text = restaurant.sortingValues?.ratingAverage.toString()
-                RestaurantsFragment.SortTypes.DISTANCE -> sortValue.text = restaurant.sortingValues?.distance.toString()
-                RestaurantsFragment.SortTypes.POPULARITY -> sortValue.text = restaurant.sortingValues?.popularity.toString()
-                RestaurantsFragment.SortTypes.AVERAGE_PRODUCT_PRICE -> sortValue.text = restaurant.sortingValues?.averageProductPrice.toString()
-                RestaurantsFragment.SortTypes.DELIVERY_COSTS -> sortValue.text = restaurant.sortingValues?.deliveryCosts.toString()
-                RestaurantsFragment.SortTypes.MIN_COST -> sortValue.text = restaurant.sortingValues?.minCost.toString()
+                SortTypes.BEST_MATCH -> sortValue.text = restaurant.sortingValues?.bestMatch.toString()
+                SortTypes.NEWEST ->sortValue.text = restaurant.sortingValues?.newest.toString()
+                SortTypes.RATING_AVERAGE -> sortValue.text = restaurant.sortingValues?.ratingAverage.toString()
+                SortTypes.DISTANCE -> sortValue.text = restaurant.sortingValues?.distance.toString()
+                SortTypes.POPULARITY -> sortValue.text = restaurant.sortingValues?.popularity.toString()
+                SortTypes.AVERAGE_PRODUCT_PRICE -> sortValue.text = restaurant.sortingValues?.averageProductPrice.toString()
+                SortTypes.DELIVERY_COSTS -> sortValue.text = restaurant.sortingValues?.deliveryCosts.toString()
+                SortTypes.MIN_COST -> sortValue.text = restaurant.sortingValues?.minCost.toString()
             }
 
             if(restaurant.isFavorite) {

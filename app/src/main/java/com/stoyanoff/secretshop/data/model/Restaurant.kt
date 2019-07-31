@@ -15,7 +15,7 @@ data class Restaurant (
     val sortingValues : SortingValues?,
     var isFavorite : Boolean = false
 )
-
+//TODO question lack of ids
 
 enum class OpenStatus (val status: String){
     @SerializedName("open")

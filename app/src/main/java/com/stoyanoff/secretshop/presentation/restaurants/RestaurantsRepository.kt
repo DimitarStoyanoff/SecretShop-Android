@@ -7,6 +7,8 @@ import com.google.gson.Gson
 import com.stoyanoff.secretshop.data.model.Restaurant
 import com.stoyanoff.secretshop.data.model.RestaurantsResponse
 import org.json.JSONObject
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.inject
 
 /**
  * Created by L on 30/07/2019.
@@ -14,9 +16,9 @@ import org.json.JSONObject
  */
 class RestaurantsRepository(
     private val context : Context
-) : RestaurantsDataSource {
+) : RestaurantsDataSource, KoinComponent {
 
-    private val sharedPreferences : SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+    val sharedPreferences: SharedPreferences by inject()
 
     override fun addToFavorites(restaurant: Restaurant) {
 

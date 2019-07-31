@@ -8,5 +8,6 @@ import com.stoyanoff.secretshop.data.model.Restaurant
  */
 data class RestaurantsViewState (
     var showLoading: Boolean = false,
-    var results: MutableList<Restaurant>? = null
+    var results: MutableList<Restaurant>? = null,
+    var selectedSortType: SortTypes = SortTypes.BEST_MATCH
 )

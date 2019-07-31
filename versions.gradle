@@ -97,6 +97,7 @@ deps.android_gradle_plugin = "com.android.tools.build:gradle:$versions.android_g
 deps.googleServices = "com.google.gms:google-services:$versions.google_services"
 deps.gson = "com.google.code.gson:gson:$versions.gson"
 deps.koin = "org.koin:koin-android-viewmodel:$versions.koin"
+deps.kointest = "org.koin:koin-test:$versions.koin"
 deps.okhttp_logging_interceptor = "com.squareup.okhttp3:logging-interceptor:$versions.okhttp_logging_interceptor"
 deps.material_design = "com.google.android.material:material:$versions.material_design"
 deps.junit = "junit:junit:$versions.junit"
