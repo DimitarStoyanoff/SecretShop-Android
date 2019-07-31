@@ -1,3 +1,25 @@
 <resources>
     <string name="app_name">SecretShop</string>
+    <string name="restaurant_list_item_name_placeholder">Restaurant name</string>
+    <string name="restaurant_list_item_sort_type_placeholder">Rating</string>
+    <string name="restaurant_list_item_sort_value_placeholder">0.5</string>
+    <string name="restaurant_list_item_open_status_placeholder">Open</string>
+
+    <string-array name="open_state_array">
+        <item>open</item>
+        <item>order ahead</item>
+        <item>closed</item>
+    </string-array>
+
+    <string-array name="sort_type_array">
+        <item>bestMatch</item>
+        <item>newest</item>
+        <item>ratingAverage</item>
+        <item>distance</item>
+        <item>popularity</item>
+        <item>averageProductPrice</item>
+        <item>deliveryCosts</item>
+        <item>minCost</item>
+    </string-array>
+
 </resources>
