@@ -2,7 +2,8 @@ package com.stoyanoff.secretshop.util
 
 import android.app.Application
 import com.stoyanoff.secretshop.inject.*
-import org.koin.android.ext.android.startKoin
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
 
 /**
  * Created by L on 27/05/2019.
@@ -16,9 +17,9 @@ class CustomApplication : Application(){
     }
 
     private fun initDependencyInjectionFramework() {
-        startKoin(this, listOf(
-            dataModule,
-            localDataModule,
-            presentationModule))
+        startKoin {
+            androidContext(this@CustomApplication)
+            modules(listOf(dataModule, localDataModule, presentationModule))
+        }
     }
 }

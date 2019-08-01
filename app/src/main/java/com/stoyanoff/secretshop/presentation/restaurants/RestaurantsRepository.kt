@@ -2,23 +2,24 @@ package com.stoyanoff.secretshop.presentation.restaurants
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.res.AssetManager
 import android.preference.PreferenceManager
 import com.google.gson.Gson
 import com.stoyanoff.secretshop.data.model.Restaurant
 import com.stoyanoff.secretshop.data.model.RestaurantsResponse
 import org.json.JSONObject
-import org.koin.standalone.KoinComponent
-import org.koin.standalone.inject
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 
 /**
  * Created by L on 30/07/2019.
  *  Copyright (c) 2017 Centroida. All rights reserved.
  */
 class RestaurantsRepository(
-    private val context : Context
+    private val assetManager : AssetManager
 ) : RestaurantsDataSource, KoinComponent {
 
-    val sharedPreferences: SharedPreferences by inject()
+    private val sharedPreferences: SharedPreferences by inject()
 
     override fun addToFavorites(restaurant: Restaurant) {
 
@@ -48,10 +49,9 @@ class RestaurantsRepository(
     }
 
     override fun getRestaurants() : MutableList<Restaurant> {
-        val gson = Gson()
-        val jsonfile: String = context.assets.open("restaurants.json").bufferedReader().use {it.readText()}
+        val jsonfile: String = assetManager.open("restaurants.json").bufferedReader().use {it.readText()}
         val jsonObject = JSONObject(jsonfile)
-        val restaurants = gson.fromJson<RestaurantsResponse>(jsonObject.toString(),
+        val restaurants = Gson().fromJson<RestaurantsResponse>(jsonObject.toString(),
             RestaurantsResponse::class.java)
         return restaurants.restaurants!!
     }
