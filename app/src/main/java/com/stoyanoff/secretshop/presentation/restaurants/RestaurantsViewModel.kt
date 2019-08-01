@@ -44,21 +44,19 @@ class RestaurantsViewModel(
     }
 
     internal fun updateFavorites(restaurants : MutableList<Restaurant>, favorites: MutableSet<String>) {
-        for (favorite in favorites) {
-            for (restaurant in restaurants) {
-                if (restaurant.name.equals(favorite))
-                    restaurant.isFavorite = true
+        if(restaurants.size > 0) {
+            favorites.forEach { favorite ->
+                restaurants.first { restaurant -> restaurant.name.equals(favorite) }.isFavorite = true
             }
         }
     }
 
     internal fun updateSingleFavorite(restaurants: MutableList<Restaurant>, restaurant: Restaurant) {
-        for (item in restaurants) {
-            if(item.name.equals(restaurant.name))
-                item.isFavorite = !restaurant.isFavorite
-        }
+        if(restaurants.size > 0)
+            restaurants.first{ item-> item.name.equals(restaurant.name)}.isFavorite = !restaurant.isFavorite
     }
 
+    //TODO discuss this use case
     //NOTE: Sorting when setting an item as favorite is not added here because of UX (looks to user like store disappears)
     internal fun listItemClicked(item : Restaurant) {
         if(item.isFavorite) {
@@ -112,8 +110,8 @@ class RestaurantsViewModel(
         this.restaurants = sorted.toMutableList()
     }
 
-    internal fun searchFilterRestaurants(fullList: MutableList<Restaurant>, query: String): MutableList<Restaurant> {
-        var query = query
+    internal fun searchFilterRestaurants(fullList: MutableList<Restaurant>, queryStr: String): MutableList<Restaurant> {
+        var query = queryStr
         query = query.toLowerCase()
         query = query.replace("\\s".toRegex(), "")
 
