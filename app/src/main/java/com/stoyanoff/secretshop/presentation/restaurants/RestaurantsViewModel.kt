@@ -17,6 +17,8 @@ class RestaurantsViewModel(
     internal val viewState = MutableLiveData<RestaurantsViewState>().apply {
         postValue(restaurantsViewState)
     }
+
+    private var originalList = mutableListOf<Restaurant>()
     internal var restaurants = mutableListOf<Restaurant>()
     private var favoritesList = mutableSetOf<String>()
     private var selectedSortType = SortTypes.BEST_MATCH
@@ -24,7 +26,8 @@ class RestaurantsViewModel(
     internal fun loadData() {
         toggleLoadingState(true)
         favoritesList = dataSource.getFavorites()
-        restaurants = dataSource.getRestaurants()
+        originalList = dataSource.getRestaurants()
+        restaurants = ArrayList<Restaurant>(originalList)
         updateFavorites(this.restaurants, this.favoritesList)
         showResults(this.restaurants)
     }
@@ -76,7 +79,9 @@ class RestaurantsViewModel(
 
 
     internal fun onSearchQueryChanged(query: String) {
-        showResults(searchFilterRestaurants(restaurants,query))
+        restaurants = searchFilterRestaurants(originalList,query)
+        sortRestaurants(restaurants)
+        showResults(restaurants)
     }
 
     internal fun onSortTypeChanged(position: Int) {
